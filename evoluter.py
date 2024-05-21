@@ -669,3 +669,148 @@ class DEEvoluter(Evoluter):
         self.marks = [self.prompts2mark[i] for i in self.population]
 
         self.sorted()
+
+class PSOEvoluter(Evoluter):
+    def __init__(self, args, evaluator):
+        super(PSOEvoluter, self).__init__(args, evaluator)
+        try:
+            self.template = self.template[args.task]
+        except:
+            self.template = self.template["sim"]
+
+    def evolute(self):
+        logger = self.logger
+        self.evaluated_prompts, cur_budget = self.init_pop()
+        evaluator = self.evaluator
+        args = self.args
+        eval_src = self.eval_src
+        eval_tgt = self.eval_tgt
+        out_path = self.public_out_path
+        template = self.template
+
+        client = evaluator.client
+        out_path = evaluator.public_out_path
+        llm_config = evaluator.llm_config
+
+        self.best_prompts = { i : prompt for i , prompt in enumerate(self.population)}
+        self.best_scores = { prompt : self.evaluated_prompts[prompt][-1] for prompt in self.population }
+        self.global_best_prompt, self.global_best_score = max( self.evaluated_prompts.items() , key=lambda x: x[1][-1] )
+
+        best_scores = []
+        avg_scores = []
+
+        for step in range(cur_budget +1 , args.budget):
+
+            total_score = 0
+
+            best_score = 0
+
+            #new_population = []
+            for j in range(args.popsize):
+
+                curr_prompt = self.population[j]
+
+                if curr_prompt not in self.evaluated_prompts:
+
+                    eval_res = evaluator.forward(curr_prompt, eval_src, eval_tgt)
+                    old_hypos = eval_res["hypos"]
+                    old_scores = eval_res["scores"]
+                    self.evaluated_prompts[curr_prompt] = old_scores
+
+                curr_scores = self.evaluated_prompts[curr_prompt]
+                
+                logger.info(f"original: {curr_prompt}")
+
+                old_score_str = "\t".join([str(i) for i in curr_scores])
+
+                logger.info(f"old_score: {old_score_str}")
+
+                request_content = (
+
+
+                    template.replace("<current_prompt>", curr_prompt)          
+                    .replace("<best_prompt>",self.best_prompts[curr_prompt])                    
+                    .replace("<global_best_prompt>", self.global_best_prompt)  
+                    #.replace("<inertia>",self.inertia),
+                                                                               
+
+                )
+
+                pso_prompt = llm_query(
+                    client=client,
+                    data=request_content,
+                    type=args.llm_type,
+                    task=False,
+                    temperature=0.5,
+                    **llm_config,
+                )
+
+                pso_prompt = get_final_prompt(pso_prompt)
+                self.population[j] = pso_prompt
+
+                pso_eval_res = evaluator.forward(pso_prompt, eval_src, eval_tgt)
+                pso_hypos = pso_eval_res["hypos"]
+                pso_scores = pso_eval_res["scores"]
+                pso_score_str = "\t".join([str(round(i, 4)) for i in pso_scores])
+
+
+                #delete prev
+
+                self.evaluated_prompts[pso_prompt] = pso_scores
+
+                # Update personal best
+                if pso_scores > self.best_scores[prompt]:
+                    self.best_prompts[prompt] = new_prompt
+                    self.best_scores[prompt] = new_score
+
+                total_score += new_score
+                if new_score > best_score:
+                    best_score = new_score
+
+            # Update global best after evaluating all prompts
+            for prompt in self.population:
+                if self.best_scores[prompt] > self.global_best_score:
+                    self.global_best_prompt = self.best_prompts[prompt]
+                    self.global_best_score = self.best_scores[prompt]
+
+            #self.population = new_population
+            avg_score = total_score / args.popsize
+            avg_scores.append(avg_score)
+            best_scores.append(best_score)
+
+            self.write_step(step, best_score, avg_score)
+
+            if step == args.budget - 1:
+                logger.info(f"----------testing step {step} self.population----------")
+                pop_marks = [self.prompts2mark[i] for i in self.population]
+                pop_scores = [self.evaluated_prompts[i] for i in self.population]
+                self.population, pop_scores, pop_marks = (
+                    list(t)
+                    for t in zip(
+                        *sorted(
+                            zip(self.population, pop_scores, pop_marks),
+                            key=lambda x: x[1][-1],
+                            reverse=True,
+                        )
+                    )
+                )
+
+                test_prompt_num = 3
+                best_score, best_prompt = evaluate_optimized_prompt(
+                    self.population[:test_prompt_num],
+                    pop_marks[:test_prompt_num],
+                    os.path.join(out_path, f"step{step}_pop_test.txt"),
+                    evaluator,
+                    args,
+                )
+                logger.info(
+                    f"----------step {step} best score: {best_score}, best prompt: {best_prompt}----------"
+                )
+
+        best_scores = [str(i) for i in best_scores]
+        avg_scores = [str(round(i, 4)) for i in avg_scores]
+        logger.info(f"best_scores: {','.join(best_scores)}")
+        logger.info(f"avg_scores: {','.join(avg_scores)}")
+        self.scores = [self.evaluated_prompts[i] for i in self.population]
+        self.marks = [self.prompts2mark[i] for i in self.population]
+        self.sorted()

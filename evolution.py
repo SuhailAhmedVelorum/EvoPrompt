@@ -16,3 +16,9 @@ def de_evo(args, evaluator):
 
     evoluter = DEEvoluter(args, evaluator)
     evoluter.evolute()
+
+def pso_evo(args, evaluator):
+    from evoluter import DEEvoluter
+
+    evoluter = PSOEvoluter(args, evaluator)
+    evoluter.evolute()
