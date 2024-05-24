@@ -725,9 +725,9 @@ class PSOEvoluter(Evoluter):
                 logger.info(f"old_score: {old_score_str}")
 
                 request_content = (
-                    template.replace("<current_prompt>", curr_prompt)          
-                    .replace("<best_prompt>",self.best_prompts[curr_prompt])                    
-                    .replace("<global_best_prompt>", self.global_best_prompt)  
+                    template.replace("<prompt3>", curr_prompt)          
+                    .replace("<prompt2>",self.best_prompts[curr_prompt])                    
+                    .replace("<prompt1>", self.global_best_prompt)  
                     #.replace("<inertia>",self.inertia),
                 )
 
