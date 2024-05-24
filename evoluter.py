@@ -750,7 +750,7 @@ class PSOEvoluter(Evoluter):
 
 
                 del self.best_prompts[curr_prompt]
-                del self.best_scores[best_scores]
+                del self.best_scores[curr_prompt]
 
                 self.evaluated_prompts[pso_prompt] = pso_scores
 
