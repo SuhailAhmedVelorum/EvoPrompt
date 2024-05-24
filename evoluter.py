@@ -702,7 +702,6 @@ class PSOEvoluter(Evoluter):
         for step in range(cur_budget +1 , args.budget):
 
             total_score = 0
-
             best_score = 0
 
             #new_population = []
@@ -726,14 +725,10 @@ class PSOEvoluter(Evoluter):
                 logger.info(f"old_score: {old_score_str}")
 
                 request_content = (
-
-
                     template.replace("<current_prompt>", curr_prompt)          
                     .replace("<best_prompt>",self.best_prompts[curr_prompt])                    
                     .replace("<global_best_prompt>", self.global_best_prompt)  
                     #.replace("<inertia>",self.inertia),
-                                                                               
-
                 )
 
                 pso_prompt = llm_query(
@@ -754,18 +749,19 @@ class PSOEvoluter(Evoluter):
                 pso_score_str = "\t".join([str(round(i, 4)) for i in pso_scores])
 
 
-                #delete prev
+                del self.best_prompts[curr_prompt]
+                del self.best_scores[best_scores]
 
                 self.evaluated_prompts[pso_prompt] = pso_scores
 
                 # Update personal best
                 if pso_scores > self.best_scores[prompt]:
-                    self.best_prompts[prompt] = new_prompt
-                    self.best_scores[prompt] = new_score
+                    self.best_prompts[pso_prompt] = pso_prompt
+                    self.best_scores[pso_prompt] = pso_scores
 
-                total_score += new_score
-                if new_score > best_score:
-                    best_score = new_score
+                total_score += pso_scores
+                if pso_scores > best_score:
+                    best_score = pso_scores
 
             # Update global best after evaluating all prompts
             for prompt in self.population:
