@@ -4,25 +4,25 @@ set -ex
 
 export CUBLAS_WORKSPACE_CONFIG=:16:8  
 
-BUDGET=10
+BUDGET=3
 
-POPSIZE=10
+POPSIZE=3
 TEMPLATE=v1
 initial=all
 
 for dataset in sam
 do
 OUT_PATH=outputs/sum/$dataset/alpaca/all/de/bd${BUDGET}_top${NUM_OPOPSIZEF_MANUAL}_para_topk_init/${TEMPLATE}/davinci
-for SEED in 5 10 15
+for SEED in 5
 do
 python run.py \
     --seed $SEED \
     --do_test \
     --dataset $dataset \
     --task sum \
-    --batch-size 20 \
+    --batch-size 8 \
     --prompt-num 0 \
-    --sample_num 100 \
+    --sample_num 50 \
     --language_model alpaca \
     --budget $BUDGET \
     --popsize $POPSIZE \

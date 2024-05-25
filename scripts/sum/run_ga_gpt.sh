@@ -4,14 +4,14 @@ set -ex
 
 export CUBLAS_WORKSPACE_CONFIG=:16:8  
 
-BUDGET=10
-POPSIZE=10
+BUDGET=3
+POPSIZE=3
 GA=topk
 
 for dataset in sam
 do
 OUT_PATH=outputs/sum/$dataset/gpt/all/ga/bd${BUDGET}_top${POPSIZE}_para_topk_init/$GA/davinci
-for SEED in 5 10 15
+for SEED in 5
 do
 python run.py \
     --seed $SEED \

@@ -5,23 +5,23 @@ set -ex
 export CUBLAS_WORKSPACE_CONFIG=:16:8  
 export CUDA_VISIBLE_DEVICES=0
 
-BUDGET=10
-POPSIZE=10
+BUDGET=3
+POPSIZE=3
 GA=topk
 
 for dataset in sam
 do
 OUT_PATH=outputs/sum/$dataset/alpaca/all/ga/bd${BUDGET}_top${POPSIZE}_para_topk_init/$GA/davinci
-for SEED in 10 15
+for SEED in 10
 do
 python run.py \
     --seed $SEED \
     --do_test \
     --dataset $dataset \
     --task sum \
-    --batch-size 20 \
+    --batch-size 8 \
     --prompt-num 0 \
-    --sample_num 100 \
+    --sample_num 50 \
     --language_model alpaca \
     --budget $BUDGET \
     --popsize $POPSIZE \
