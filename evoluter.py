@@ -372,6 +372,7 @@ class GAEvoluter(Evoluter):
         fitness = np.array([self.evaluated_prompts[i][0] for i in self.population])
 
         for step in range(cur_budget + 1, args.budget):
+            print("Step:{1}".format(step))
             total_score = 0
             best_score = 0
             fitness = np.array([self.evaluated_prompts[i][0] for i in self.population])

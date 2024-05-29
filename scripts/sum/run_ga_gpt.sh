@@ -15,7 +15,6 @@ for SEED in 5
 do
 python run.py \
     --seed $SEED \
-    --do_test \
     --dataset $dataset \
     --task sum \
     --batch-size 20 \
@@ -26,7 +25,7 @@ python run.py \
     --popsize $POPSIZE \
     --position pre \
     --evo_mode ga \
-    --llm_type davinci \
+    --llm_type turbo \
     --setting default \
     --initial all \
     --initial_mode para_topk \
