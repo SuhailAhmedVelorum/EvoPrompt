@@ -9,7 +9,7 @@ BUDGET=1
 POPSIZE=3
 SEED=5
 INITIAL_MODE=para_topk
-LLM_TYPE=turbo
+LLM_TYPE=gpt4
 
 for DATASET in sst2
 do

@@ -772,7 +772,7 @@ class PSOEvoluter(Evoluter):
             #     self.evaluated_prompts.items(), key=lambda x: x[1][-1])
 
             for prompt in self.population:
-                if self.best_scores[prompt] > self.global_best_score:
+                if self.best_scores[prompt] > self.global_best_score[-1]:
                     self.global_best_prompt = prompt
                     self.global_best_score = self.best_scores[prompt]
 
