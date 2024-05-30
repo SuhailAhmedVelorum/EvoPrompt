@@ -11,7 +11,7 @@ SEED=5
 INITIAL_MODE=para_topk
 LLM_TYPE=turbo
 
-for DATASET in cr
+for DATASET in sst2
 do
 OUT_PATH=outputs/cls/$DATASET/alpaca/all/pso/bd${BUDGET}_top${POPSIZE}_${INITIAL_MODE}_init/$LLM_TYPE
 for SEED in 5
