@@ -1,4 +1,4 @@
-template = {
+template_pso_1 = {
     "sum": """Please follow the instruction step-by-step to generate a better prompt using a particle swarm optimization approach.
 1. Initialize with three versions of the prompt:
 Current Prompt: Summarize the given text.

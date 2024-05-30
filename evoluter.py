@@ -14,6 +14,7 @@ from utils import (
 from infer import evaluate_optimized_prompt
 from llm_client import paraphrase, llm_query
 from data.templates import templates
+from data.template_pso1 import templates_pso_1
 from data.template_ga import templates_2
 
 
@@ -675,9 +676,9 @@ class PSOEvoluter(Evoluter):
     def __init__(self, args, evaluator):
         super(PSOEvoluter, self).__init__(args, evaluator)
         try:
-            self.template = self.template[args.task]
+            self.template = templates_pso_1[args.task]
         except:
-            self.template = self.template["sim"]
+            self.template = templates_pso_1["sim"]
 
     def evolute(self):
         logger = self.logger
@@ -694,7 +695,9 @@ class PSOEvoluter(Evoluter):
         llm_config = evaluator.llm_config
 
         self.best_prompts = { i : prompt for i , prompt in enumerate(self.population)}
+        # best_prompt {index: prompt}
         self.best_scores = { prompt : self.evaluated_prompts[prompt][-1] for prompt in self.population }
+        # {prompt: personal best}
         self.global_best_prompt, self.global_best_score = max( self.evaluated_prompts.items() , key=lambda x: x[1][-1] )
 
         best_scores = []
@@ -750,14 +753,14 @@ class PSOEvoluter(Evoluter):
                 pso_score_str = "\t".join([str(round(i, 4)) for i in pso_scores])
 
 
-                del self.best_prompts[curr_prompt]
-                del self.best_scores[curr_prompt]
+                # del self.best_prompts[curr_prompt]
+                # del self.best_scores[curr_prompt]
 
                 self.evaluated_prompts[pso_prompt] = pso_scores
 
                 # Update personal best
-                if pso_scores > self.best_scores[prompt]:
-                    self.best_prompts[pso_prompt] = pso_prompt
+                if pso_scores > self.best_scores[curr_prompt]: # [CHANGE HERE]
+                    self.best_prompts[j] = pso_prompt
                     self.best_scores[pso_prompt] = pso_scores
 
                 total_score += pso_scores
@@ -765,12 +768,15 @@ class PSOEvoluter(Evoluter):
                     best_score = pso_scores
 
             # Update global best after evaluating all prompts
-            for prompt in self.population:
-                if self.best_scores[prompt] > self.global_best_score:
-                    self.global_best_prompt = self.best_prompts[prompt]
-                    self.global_best_score = self.best_scores[prompt]
+            self.global_best_prompt, self.global_best_score = max(
+                self.evaluated_prompts.items(), key=lambda x: x[1][-1])
 
-            #self.population = new_population
+            # for prompt in self.population:
+            #     if self.best_scores[prompt] > self.global_best_score:
+            #         self.global_best_prompt = prompt
+            #         self.global_best_score = self.best_scores[prompt]
+
+            # self.population = new_population
             avg_score = total_score / args.popsize
             avg_scores.append(avg_score)
             best_scores.append(best_score)
