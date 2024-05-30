@@ -14,7 +14,7 @@ do
 OUT_PATH=outputs/sum/$dataset/gpt/all/de/bd${BUDGET}_top${POPSIZE}_para_topk_init/${TEMPLATE}/davinci
 for SEED in 5 10 15
 do
-python run.py \
+python3 run.py \
     --seed $SEED \
     --do_test \
     --dataset $dataset \
