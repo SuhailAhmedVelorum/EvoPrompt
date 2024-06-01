@@ -1,10 +1,9 @@
-templates_2 = {
-    "cls": """Please follow the instruction step-by-step to generate a better prompt.
-1. Crossover the following prompts and generate a new prompt such that the new prompt is a mix of 30 percent of Prompt 1, 25 percent of Prompt 2 and 15 percent of Prompt 3.
-Prompt 1: Rewrite the input text into simpler text.
-Prompt 2: Rewrite my complex sentence in simpler terms, but keep the meaning.
-Prompt 3: Condense the text while retaining main points.
-2. Take the prompt generated in Step 1 and append <prompt> to the beginning of it and </prompt> to the end of it.
+template_pso_1 = {
+    "sum": """Please follow the instruction step-by-step to generate a better prompt using a particle swarm optimization approach.
+1. Initialize with three versions of the prompt:
+Current Prompt: Summarize the given text.
+Best Prompt: Provide a brief summary of the provided content.
+Global Best Prompt: Condense the text while retaining main points.
 
 1. Crossover Prompt: Rewrite the complex text into simpler text while keeping its meaning.
 2. <prompt>Rewrite the complex text into simpler text while keeping its meaning.</prompt>
