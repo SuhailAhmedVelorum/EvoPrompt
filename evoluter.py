@@ -713,9 +713,9 @@ class PSOEvoluter(Evoluter):
                 if curr_prompt not in self.evaluated_prompts:
 
                     eval_res = evaluator.forward(curr_prompt, eval_src, eval_tgt)
-                    old_hypos = eval_res["hypos"]
-                    old_scores = eval_res["scores"]
-                    self.evaluated_prompts[curr_prompt] = old_scores
+                    curr_hypos = eval_res["hypos"]
+                    curr_scores = eval_res["scores"]
+                    self.evaluated_prompts[curr_prompt] = curr_scores
 
                 curr_scores = self.evaluated_prompts[curr_prompt]
                 
@@ -854,9 +854,9 @@ class GWOEvoluter(Evoluter):
                 if curr_prompt not in self.evaluated_prompts:
 
                     eval_res = evaluator.forward(curr_prompt, eval_src, eval_tgt)
-                    old_hypos = eval_res["hypos"]
-                    old_scores = eval_res["scores"]
-                    self.evaluated_prompts[curr_prompt] = old_scores
+                    curr_hypos = eval_res["hypos"]
+                    curr_scores = eval_res["scores"]
+                    self.evaluated_prompts[curr_prompt] = curr_scores
 
                 curr_scores = self.evaluated_prompts[curr_prompt]
                 
@@ -884,6 +884,7 @@ class GWOEvoluter(Evoluter):
                 )
 
                 gwo_prompt = get_final_prompt(gwo_prompt)
+                self.prompts2mark[gwo_prompt] = "evoluted"
                 self.population[j] = gwo_prompt
 
                 gwo_eval_res = evaluator.forward(gwo_prompt, eval_src, eval_tgt)
@@ -899,9 +900,9 @@ class GWOEvoluter(Evoluter):
                 
                
 
-                total_score += gwo_scores
-                if gwo_scores > best_score:
-                    best_score = gwo_scores
+                total_score += gwo_scores[-1]
+                if gwo_scores[-1] > best_score:
+                    best_score = gwo_scores[-1]
 
             # Update the alpha, beta and delta positions 
             
