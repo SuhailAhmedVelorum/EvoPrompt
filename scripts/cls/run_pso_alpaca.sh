@@ -5,13 +5,13 @@ set -ex
 export CUBLAS_WORKSPACE_CONFIG=:16:8  
 export CUDA_VISIBLE_DEVICES=0
 
-BUDGET=1
-POPSIZE=3
+BUDGET=5
+POPSIZE=5
 SEED=5
-INITIAL_MODE=para_topk
-LLM_TYPE=gpt4
+INITIAL_MODE=topk
+LLM_TYPE=turbo
 
-for DATASET in sst2
+for DATASET in sst-5
 do
 OUT_PATH=outputs/cls/$DATASET/alpaca/all/pso/bd${BUDGET}_top${POPSIZE}_${INITIAL_MODE}_init/$LLM_TYPE
 for SEED in 5
@@ -35,7 +35,8 @@ python run.py \
     --initial_mode $INITIAL_MODE \
     --output $OUT_PATH/seed$SEED \
     --cache_path data/cls/$DATASET/seed${SEED}/prompts_batched.json \
-    --dev_file ./data/cls/$DATASET/seed${SEED}/dev.txt
+    --dev_file ./data/cls/$DATASET/seed${SEED}/dev.txt \
+    --test_file ./data/cls/$DATASET/seed${SEED}/test.txt
 done
-python get_result.py -p $OUT_PATH > $OUT_PATH/result.txt
+python get_result.py -p $OUT_PATH > $OUT_PATH/result.txt 
 done
