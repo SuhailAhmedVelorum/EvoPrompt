@@ -22,3 +22,9 @@ def pso_evo(args, evaluator):
 
     evoluter = PSOEvoluter(args, evaluator)
     evoluter.evolute()
+
+def gwo_evo(args, evaluator):
+    from evoluter import GWOEvoluter
+
+    evoluter = GWOEvoluter(args, evaluator)
+    evoluter.evolute()

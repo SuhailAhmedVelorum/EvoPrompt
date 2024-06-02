@@ -33,10 +33,6 @@ Global Best Prompt: <global_best_prompt>
 
 1. """,
 
-
-
-
-
     "cls": """Please follow the instruction step-by-step to generate a better prompt using a particle swarm optimization approach.
 1. Initialize with three versions of the prompt:
 Current Prompt: Your task is to classify the comment as one of the following categories: terrible, bad, okay, good, great.
