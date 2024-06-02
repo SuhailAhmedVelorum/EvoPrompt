@@ -4,8 +4,8 @@ set -ex
 
 export CUBLAS_WORKSPACE_CONFIG=:16:8  
 
-BUDGET=5
-POPSIZE=5
+BUDGET=3
+POPSIZE=3
 INITIAL_MODE=topk
 LLM_TYPE=turbo
 EVO_MODE=pso
@@ -18,7 +18,7 @@ do
 python run.py \
     --seed $SEED \
     --dataset $DATASET \
-    --task cls \
+    --task sum \
     --batch-size 8 \
     --prompt-num 0 \
     --sample_num 5 \
