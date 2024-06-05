@@ -5,13 +5,13 @@ set -ex
 export CUBLAS_WORKSPACE_CONFIG=:16:8  
 export CUDA_VISIBLE_DEVICES=0
 
-BUDGET=5
-POPSIZE=5
+BUDGET=1
+POPSIZE=3
 SEED=5
 INITIAL_MODE=topk
 LLM_TYPE=turbo
 
-for DATASET in sst-5
+for DATASET in mr
 do
 OUT_PATH=outputs/cls/$DATASET/alpaca/all/pso/bd${BUDGET}_top${POPSIZE}_${INITIAL_MODE}_init/$LLM_TYPE
 for SEED in 5
