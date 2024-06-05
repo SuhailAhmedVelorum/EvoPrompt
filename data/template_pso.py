@@ -1,4 +1,4 @@
-template_pso_1 = {
+template_pso = {
     "sum": """Please follow the instruction step-by-step to generate a better prompt using a particle swarm optimization approach.
 1. Initialize with three versions of the prompt:
 Current Prompt: Summarize the given text.
@@ -9,7 +9,7 @@ Global Best Prompt: Condense the text while retaining main points.
 2. <prompt>Rewrite the complex text into simpler text while keeping its meaning.</prompt>
 
 Please follow the instruction step-by-step to generate a better prompt.
-1. Crossover the following prompts and generate a new prompt such that the new prompt is a mix of 30 percent of Prompt 1, 25 percent of Prompt 2 and 15 percent of Prompt 3:
+1. Crossover the following prompts and generate a new prompt such that the new prompt is a mix of 70 percent of Prompt 1, 20 percent of Prompt 2 and 10 percent of Prompt 3:
 Prompt 1: <prompt1>
 Prompt 2: <prompt2>
 Prompt 3: <prompt3>

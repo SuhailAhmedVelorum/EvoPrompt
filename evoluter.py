@@ -14,7 +14,7 @@ from utils import (
 from infer import evaluate_optimized_prompt
 from llm_client import paraphrase, llm_query
 from data.templates import templates
-from data.template_pso1 import templates_pso_1
+from data.template_pso import templates_pso
 from data.template_ga import templates_2
 
 
@@ -676,9 +676,9 @@ class PSOEvoluter(Evoluter):
     def __init__(self, args, evaluator):
         super(PSOEvoluter, self).__init__(args, evaluator)
         try:
-            self.template = templates_pso_1[args.task]
+            self.template = templates_pso[args.task]
         except:
-            self.template = templates_pso_1["sim"]
+            self.template = templates_pso["sim"]
 
     def evolute(self):
         logger = self.logger
