@@ -129,6 +129,7 @@ class Evoluter:
                     topk_population.append((scores[-1], prompt))
                 topk_population.sort(reverse=True, key=lambda x: x[0])
 
+                os.makedirs(os.path.dirname(cache_path), exist_ok=True)
                 with open(cache_path, "w") as wf:
                     self.evaluated_prompts = dict(
                         sorted(
