@@ -813,8 +813,9 @@ class PSOEvoluter(Evoluter):
             best_scores.append(best_score)
             best_score_sets.append(best_score_set)
 
-            self.write_step("STEP UPDATE (step, best, scoreset, avg): ",
-                            step, best_score, best_score_set, avg_score)
+            logger.info(
+                f"step: {step}, best_score: {best_score}, avg_score: {avg_score}, best_score_set: {best_score_set}")
+            self.write_step(step, best_score, avg_score)
 
             if step == args.budget - 1:
                 logger.info(
