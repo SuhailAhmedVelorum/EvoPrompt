@@ -21,11 +21,11 @@ python run.py \
     --task sum \
     --batch-size 8 \
     --prompt-num 0 \
-    --sample_num 5 \
+    --sample_num 50 \
     --language_model gpt \
     --budget $BUDGET \
     --popsize $POPSIZE \
-    --position pre \
+    --position icl \
     --evo_mode $EVO_MODE \
     --llm_type $LLM_TYPE \
     --setting default \

@@ -694,16 +694,19 @@ class PSOEvoluter(Evoluter):
         out_path = evaluator.public_out_path
         llm_config = evaluator.llm_config
 
-        self.pbest = { i : [prompt , self.evaluated_prompts[prompt][-1]] for i , prompt in enumerate(self.population) }
-        self.global_best_prompt, self.global_best_score = max( self.evaluated_prompts.items() , key=lambda x: x[1][-1] )
+        self.pbest = {i: [prompt, self.evaluated_prompts[prompt][-1],
+                          self.evaluated_prompts[prompt]] for i, prompt in enumerate(self.population)}
+        self.global_best_prompt, self.global_best_score, self.global_best_score_set = max( self.evaluated_prompts.items() , key=lambda x: x[1][-1] )
 
         best_scores = []
         avg_scores = []
+        best_score_sets = []
 
         for step in range(cur_budget +1 , args.budget):
             logger.info(f"############################# step: {step}#########################################")
             total_score = 0
             best_score = 0
+            best_score_set = []
 
             #new_population = []
             for j in range(args.popsize):
@@ -748,8 +751,8 @@ class PSOEvoluter(Evoluter):
                 pso_eval_res = evaluator.forward(pso_prompt, eval_src, eval_tgt)
                 pso_hypos = pso_eval_res["hypos"]
                 pso_scores = pso_eval_res["scores"]
-                # pso_score_str = "\t".join([str(round(i, 4)) for i in pso_scores])
-
+                pso_score_str = "\t".join([str(round(i, 4)) for i in pso_scores])
+                logger.info(f"new_score: {pso_score_str}")
 
                 # del self.best_prompts[curr_prompt]
                 # del self.best_scores[curr_prompt]
@@ -758,23 +761,26 @@ class PSOEvoluter(Evoluter):
 
                 # Update personal best
                 if pso_scores[-1] > self.pbest[j][1]:
-                  self.pbest[j] = [pso_prompt,pso_scores[-1]]
+                  self.pbest[j] = [pso_prompt,pso_scores[-1],pso_scores]
 
                 total_score += pso_scores[-1]
                 if pso_scores[-1] > best_score:
                     best_score = pso_scores[-1]
+                    best_score_set = pso_scores
 
             for i in range(len(self.population)):
                 if self.pbest[i][1] > self.global_best_score[-1]:
                     self.global_best_prompt = self.pbest[i][0]
                     self.global_best_score = [self.pbest[i][1]]
+                    self.global_best_score_set = self.pbest[i][2]
 
             # self.population = new_population
             avg_score = total_score / args.popsize
             avg_scores.append(avg_score)
             best_scores.append(best_score)
+            best_score_sets.append(best_score_set)
 
-            self.write_step(step, best_score, avg_score)
+            self.write_step("STEP UPDATE (step, best, avg): ", step, best_score, avg_score)
 
             if step == args.budget - 1:
                 logger.info(f"----------testing step {step} self.population----------")
@@ -803,9 +809,11 @@ class PSOEvoluter(Evoluter):
                 )
 
         best_scores = [str(i) for i in best_scores]
+        best_score_sets = [str(i) for i in best_score_sets]
         avg_scores = [str(round(i, 4)) for i in avg_scores]
         logger.info(f"best_scores: {','.join(best_scores)}")
         logger.info(f"avg_scores: {','.join(avg_scores)}")
+        logger.info(f"best_scores_sets: {';'.join(best_score_sets)}")
         self.scores = [self.evaluated_prompts[i] for i in self.population]
         self.marks = [self.prompts2mark[i] for i in self.population]
         self.sorted()
