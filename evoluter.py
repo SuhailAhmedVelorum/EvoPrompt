@@ -37,8 +37,6 @@ class Evoluter:
 
         if args.task in ["sim", "sum"]:
             self.eval_src, self.eval_tgt = evaluator.dev_src, evaluator.dev_tgt
-            self.eval_src = self.eval_src[: args.sample_num]
-            self.eval_tgt = [i[: args.sample_num] for i in self.eval_tgt]
         elif args.task == "qa":
             self.eval_src, self.eval_tgt = evaluator.dev_src, evaluator.dev_tgt
         else:
