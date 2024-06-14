@@ -25,7 +25,7 @@ def cal_rouge(output_texts, ref_texts):
     rouge = Rouge()
     output_texts = [" ".join(MosesTokenizer('en')(sent)) for sent in output_texts]
     ref_texts = [" ".join(MosesTokenizer('en')(sent)) for sent in ref_texts]
-    scores = rouge.get_scores(output_texts, ref_texts, avg=True)
+    scores = rouge.get_scores(output_texts, ref_texts, avg=True, ignore_empty=True)
     print(scores)
     return scores['rouge-1']['f'], scores['rouge-2']['f'], scores['rouge-l']['f'] 
 

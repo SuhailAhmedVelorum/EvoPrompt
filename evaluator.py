@@ -464,9 +464,6 @@ class SumEvaluator(Evaluator):
             with open(output, "w") as f:
                 for hypo in hypos:
                     f.write(hypo + "\n")
-        hyps_and_refs = zip(hypos, ref_texts)
-        hyps_and_refs = [_ for _ in hyps_and_refs if len(_[0]) > 0]
-        hypos, ref_texts = zip(*hyps_and_refs)
         rouge1, rouge2, rougel = cal_rouge(hypos, ref_texts)
         mean_score = np.mean([rouge1, rouge2, rougel])
         return {"hypos": hypos, "scores": [rouge1, rouge2, rougel, mean_score]}
