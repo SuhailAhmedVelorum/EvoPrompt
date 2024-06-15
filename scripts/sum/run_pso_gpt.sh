@@ -25,7 +25,7 @@ python run.py \
     --language_model gpt \
     --budget $BUDGET \
     --popsize $POPSIZE \
-    --position icl \
+    --position pre \
     --evo_mode $EVO_MODE \
     --llm_type $LLM_TYPE \
     --setting default \

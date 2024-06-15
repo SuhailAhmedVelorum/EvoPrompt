@@ -8,7 +8,7 @@ export CUDA_VISIBLE_DEVICES=0
 BUDGET=3
 POPSIZE=3
 INITIAL_MODE=topk
-LLM_TYPE=davinci
+LLM_TYPE=turbo
 EVO_MODE=pso
 
 for DATASET in sam
@@ -26,7 +26,7 @@ python run.py \
     --language_model alpaca \
     --budget $BUDGET \
     --popsize $POPSIZE \
-    --position icl \
+    --position pre \
     --evo_mode $EVO_MODE \
     --llm_type $LLM_TYPE \
     --setting default \
