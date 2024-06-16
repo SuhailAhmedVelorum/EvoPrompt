@@ -453,7 +453,6 @@ class SumEvaluator(Evaluator):
         hypos = []
         hypos = self.get_generations(prompt_pre,eval_src, ref_texts)
         hypos = [hypo.replace("\n", "") for hypo in hypos]
-        # print(len(hypos))
         for i in range(len(hypos)):
             if len(hypos[i]) == 0 or hypos[i].isspace():
                 hypos[i] = eval_src[i]
