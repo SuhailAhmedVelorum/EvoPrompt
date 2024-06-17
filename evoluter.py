@@ -15,6 +15,7 @@ from infer import evaluate_optimized_prompt
 from llm_client import paraphrase, llm_query
 from data.templates import templates
 from data.template_pso import template_pso
+from data.template_gwo import template_gwo
 from data.template_ga import templates_2
 
 
@@ -858,9 +859,9 @@ class GWOEvoluter(Evoluter):
     def __init__(self, args, evaluator):
         super(GWOEvoluter, self).__init__(args, evaluator)
         try:
-            self.template = self.template[args.task]
+            self.template = self.template_gwo[args.task]
         except:
-            self.template = self.template["sim"]
+            self.template = self.template_gwo["sim"]
 
     def evolute(self):
         logger = self.logger

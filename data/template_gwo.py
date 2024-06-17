@@ -1,4 +1,4 @@
-templates_pso_1 = {
+template_gwo = {
     "cls": """Please follow the instruction step-by-step to generate a better prompt.
 1. Crossover the following prompts and generate a new prompt such that the new prompt is a mix of 30 percent of Prompt 1, 25 percent of Prompt 2, 25 percent of Prompt 3 and 20 percent of Prompt 4:
 Prompt 1: Your task is to classify the comment as one of the following categories: terrible, bad, okay, good, great.
