@@ -14,7 +14,7 @@ LLM_TYPE=turbo
 for DATASET in mr
 do
 OUT_PATH=outputs/cls/$DATASET/alpaca/all/gwo/bd${BUDGET}_top${POPSIZE}_${INITIAL_MODE}_init/$LLM_TYPE
-for SEED in 5 10
+for SEED in 5
 do
 python run.py \
     --seed $SEED \

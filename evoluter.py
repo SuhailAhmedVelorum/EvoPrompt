@@ -814,9 +814,9 @@ class GWOEvoluter(Evoluter):
     def __init__(self, args, evaluator):
         super(GWOEvoluter, self).__init__(args, evaluator)
         try:
-            self.template = self.template[args.task]
+            self.template = template_gwo[args.task]
         except:
-            self.template = self.template["sim"]
+            self.template = template_gwo["sim"]
 
     def evolute(self):
         logger = self.logger
