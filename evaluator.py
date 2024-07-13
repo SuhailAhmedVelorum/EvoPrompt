@@ -304,6 +304,7 @@ class CLSEvaluator(Evaluator):
         )
         args.test_file = (
             f"./data/cls/{args.dataset}/test.txt"
+
             if args.test_file is None
             else args.test_file
         )
