@@ -1,5 +1,5 @@
 from args import parse_args
-from evolution import ape, ga_evo, de_evo
+from evolution import ape, gwo_evo, pso_evo
 from utils import set_seed
 from evaluator import CLSEvaluator, SimEvaluator, SumEvaluator
 
@@ -16,10 +16,10 @@ def run(args):
     )
     if args.evo_mode == "para" and args.para_mode == "topk":
         ape(args=args, evaluator=evaluator)
-    elif args.evo_mode in 'de':
-        de_evo(args=args, evaluator=evaluator)
-    elif args.evo_mode == 'ga':
-        ga_evo(args=args, evaluator=evaluator)
+    elif args.evo_mode == 'pso':
+        pso_evo(args=args, evaluator=evaluator)
+    elif args.evo_mode == 'gwo':
+        gwo_evo(args=args, evaluator=evaluator)
 
 if __name__ == "__main__":
     args = parse_args()

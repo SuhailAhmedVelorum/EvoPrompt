@@ -6,7 +6,6 @@ from utils import load_cls_data
 
 sys.path.append("./")
 
-
 def evaluate_single_prompt(evaluator, args, prompt_pre, output=None):
     if args.task == 'cls':
         eval_src, eval_tgt = load_cls_data(

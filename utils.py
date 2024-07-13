@@ -69,8 +69,6 @@ def format_template(
     src,
     tgt="",
     template="",
-    src_name="",
-    tgt_name="",
     line_break='\n',
 ):
 

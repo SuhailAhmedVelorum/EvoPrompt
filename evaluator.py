@@ -2,20 +2,15 @@ import json
 import os
 from tqdm import tqdm
 import numpy as np
-import random
 import sys
-import time
 from torch.utils.data import DataLoader, Dataset
 from transformers import (
     AutoTokenizer,
-    OPTForCausalLM,
     AutoModelForCausalLM,
-    AutoModelForMaskedLM,
     LlamaForCausalLM,
     LlamaTokenizer,
 )
 from datasets import Dataset as Dataset2
-from sacrebleu.metrics import BLEU, CHRF, TER
 
 from utils import *
 from dataset import TextDataset
@@ -43,7 +38,6 @@ class Evaluator(object):
             self.template = templates[args.task]["icl"][model][dataset][1]
         else:
             self.template = None
-        # print(self.template)
         self.model_name = args.language_model.split("/")[-1]
 
         self.client = None
@@ -309,7 +303,8 @@ class CLSEvaluator(Evaluator):
             else args.dev_file
         )
         args.test_file = (
-            f"./data/cls/data/{args.dataset}/test.txt"
+            f"./data/cls/{args.dataset}/test.txt"
+
             if args.test_file is None
             else args.test_file
         )
@@ -454,7 +449,6 @@ class SumEvaluator(Evaluator):
         hypos = []
         hypos = self.get_generations(prompt_pre,eval_src, ref_texts)
         hypos = [hypo.replace("\n", "") for hypo in hypos]
-        # print(len(hypos))
         for i in range(len(hypos)):
             if len(hypos[i]) == 0 or hypos[i].isspace():
                 hypos[i] = eval_src[i]

@@ -4,15 +4,14 @@ def ape(args, evaluator):
     evoluter = ParaEvoluter(args, evaluator)
     evoluter.evolute(mode=args.para_mode)
 
-def ga_evo(args, evaluator):
-    from evoluter import GAEvoluter
+def pso_evo(args, evaluator):
+    from evoluter import PSOEvoluter
 
-    evoluter = GAEvoluter(args, evaluator)
+    evoluter = PSOEvoluter(args, evaluator)
     evoluter.evolute()
 
+def gwo_evo(args, evaluator):
+    from evoluter import GWOEvoluter
 
-def de_evo(args, evaluator):
-    from evoluter import DEEvoluter
-
-    evoluter = DEEvoluter(args, evaluator)
+    evoluter = GWOEvoluter(args, evaluator)
     evoluter.evolute()
