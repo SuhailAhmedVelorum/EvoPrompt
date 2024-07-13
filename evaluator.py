@@ -2,20 +2,15 @@ import json
 import os
 from tqdm import tqdm
 import numpy as np
-import random
 import sys
-import time
 from torch.utils.data import DataLoader, Dataset
 from transformers import (
     AutoTokenizer,
-    OPTForCausalLM,
     AutoModelForCausalLM,
-    AutoModelForMaskedLM,
     LlamaForCausalLM,
     LlamaTokenizer,
 )
 from datasets import Dataset as Dataset2
-from sacrebleu.metrics import BLEU, CHRF, TER
 
 from utils import *
 from dataset import TextDataset

@@ -43,9 +43,9 @@ def parse_args():
     parser.add_argument(
         "--evo_mode",
         type=str,
-        default="de",
+        default="pso",
         help="mode of the evolution",
-        choices=["de", "ga", "pso","gwo"],
+        choices=["pso","gwo"],
     )
     parser.add_argument("--llm_type", type=str, default="turbo", help='llm to generate prompt', choices=['davinci', 'turbo', 'gpt4'])
     parser.add_argument(
@@ -57,13 +57,10 @@ def parse_args():
     parser.add_argument("--initial_mode", type=str)
     parser.add_argument("--para_mode", type=str, default=None)
     parser.add_argument("--ckpt_pop", type=str, default=None)
-    parser.add_argument("--template", type=str, default="v1", help='the template used for DE')
     parser.add_argument("--pred_mode", type=str, default="logits")
     parser.add_argument("--client", action="store_true"),
     parser.add_argument("--cache_path", type=str, default=None, help="cache path of the prompt score")
     parser.add_argument("--setting", type=str, default="default", help="setting of the OpenAI API")
-    parser.add_argument("--donor_random", action="store_true", help='prompt 3 random or best, used only for DE')
-    parser.add_argument("--ga_mode", type=str, default="topk", help="update strategy for GA")
     parser.add_argument(
         "--content",
         type=str,

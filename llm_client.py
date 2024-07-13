@@ -1,15 +1,9 @@
-import json
-import os
-import atexit
-import requests
-import sys
 from tqdm import tqdm
 import openai
-from termcolor import colored
 import time
 from utils import read_yaml_file, remove_punctuation, batchify
 
-def extract_seconds(text, retried=5):
+def extract_seconds(text):
     words = text.split()
     for i, word in enumerate(words):
         if "second" in word:
@@ -32,7 +26,6 @@ def form_request(data, type, **kwargs):
             **kwargs,
         }
     else:
-        # assert isinstance(data, str)
         messages_list = []
         messages_list.append({"role": "user", "content": data})
         request_data = {
@@ -44,7 +37,6 @@ def form_request(data, type, **kwargs):
             "stop": None,
             **kwargs,
         }
-    # print(request_data)
     return request_data
 
 def llm_init(auth_file="../auth.yaml", llm_type='davinci', setting="default"):
@@ -70,7 +62,6 @@ def llm_query(data, client, type, task, **config):
             retried = 0
             request_data = form_request(batch, model_name, **config)
             if "davinci" in type:
-                # print(request_data)
                 while True:
                     try:
                         response = openai.Completion.create(**request_data)
@@ -91,7 +82,6 @@ def llm_query(data, client, type, task, **config):
                         try:
                             result = openai.ChatCompletion.create(**request_data)
                             result = result["choices"][0]["message"]["content"]
-                            # print(result)
                             response.append(result)
                             break
                         except Exception as e:
@@ -101,14 +91,10 @@ def llm_query(data, client, type, task, **config):
                             retried = retried + 1
                             time.sleep(second)
 
-            # print(response)
             if task:
                 results = [str(r).strip().split("\n\n")[0] for r in response]
             else:
                 results = [str(r).strip() for r in response]
-            # print(results)
-            # results = [str(r['text']).strip() for r in response]
-            # print(results)
             hypos.extend(results)
     else:
         retried = 0
@@ -147,7 +133,6 @@ def paraphrase(sentence, client, type, **kwargs):
 
     else:
         resample_template = f"Generate a variation of the following instruction while keeping the semantic meaning.\nInput:{sentence}\nOutput:"
-    # print(resample_template)
     results = llm_query(resample_template, client, type, False, **kwargs)
     return results
 

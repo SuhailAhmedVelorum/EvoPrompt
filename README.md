@@ -1,10 +1,11 @@
 # 🧬 EvoPrompt
 
-This is the official implementation of the paper [Connecting Large Language Models with Evolutionary Algorithms Yields Powerful Prompt Optimizers](https://arxiv.org/abs/2309.08532)
+This is the modified implementation of the paper [Connecting Large Language Models with Evolutionary Algorithms Yields Powerful Prompt Optimizers](https://arxiv.org/abs/2309.08532) to work on Swarm Optimization Algorithms in the paper SwarmPrompt: Swarm Intelligence-Driven Prompt
+Optimization using Large Language Models
 
 ## 📃 Abstract
 
-Large Language Models (LLMs) excel in various tasks, but they rely on carefully crafted prompts that often demand substantial human effort. To automate this process, in this paper, we propose a novel framework for discrete prompt optimization, called EvoPrompt, which borrows the idea of evolutionary algorithms (EAs) as they exhibit good performance and fast convergence. To enable EAs to work on discrete prompts, which are natural language expressions that need to be coherent and human-readable, we connect LLMs with EAs. This approach allows us to simultaneously leverage the powerful language processing capabilities of LLMs and the efficient optimization performance of EAs. Specifically, abstaining from any gradients or parameters, EvoPrompt starts from a population of prompts and iteratively generates new prompts with LLMs based on the evolutionary operators, improving the population based on the development set. We optimize prompts for both closed- and open-source LLMs including GPT-3.5 and Alpaca, on 31 datasets covering language understanding, generation tasks, as well as BIG-Bench Hard (BBH) tasks. EvoPrompt significantly outperforms human-engineered prompts and existing methods for automatic prompt generation (e.g., up to 25% on BBH). Furthermore, EvoPrompt demonstrates that connecting LLMs with EAs creates synergies, which could inspire further research on the combination of LLMs and conventional algorithms.
+ The advancement of Generative AI and Large Language Models (LLMs) has made developing effective text prompts challenging, particularly for less experienced users. LLMs often struggle with nuances, tone, and context, requiring precise prompt engineering for generating high-quality prompts. Previous research uses approaches such as gradient descent, reinforcement learning, and evolutionary algorithms for optimizing prompts. This paper introduces SwarmPrompt, a novel approach that utilizes swarm intelligence-based optimization techniques, specifically Particle Swarm Optimization and Grey Wolf Optimization, to enhance and optimize prompts. SwarmPrompt leverages LLMs' language processing capabilities and swarm operators to iteratively modify prompts, identifying the best-performing ones. This method reduces human intervention, outperforms human-engineered prompts, and decreases the time and resources needed for prompt optimization. Experimental results show that SwarmPrompt outperforms human-engineered prompts by 4\% for classification tasks and by 2\% for simplification and summarization tasks. 
 
 ## 🚀 Quick Start
 
@@ -16,27 +17,22 @@ Large Language Models (LLMs) excel in various tasks, but they rely on carefully 
 
 ### ♻ Evolution
 
-We instanciate two evolutionary algorithms, GA (genetic algorithm) and DE (diffenrential evolution) to evolve upon the initial population. Evolve your prompts using the following commands:
+We instanciate two evolutionary algorithms, PSO (Particle Swarm Optimization) and GWO (Gray Wolf Optimization) to evolve upon the initial population. Evolve your prompts using the following commands:
 
 Customize the parameter `--llm_type` to use `text-davinci-003`, `gpt-3.5-turbo`, `gpt-4`.
 
 ```bash
 # understanding task on Alpaca
-bash scripts/cls/run_ga_alpaca.sh  # Genetic algorithm
-bash scripts/cls/run_de_alpaca.sh  # Differential evolution
+bash scripts/cls/run_pso_alpaca.sh  # Genetic algorithm
+bash scripts/cls/run_gwo_alpaca.sh  # Differential evolution
 
 # simplification task on Alpaca
-bash scripts/sim/run_de_alpaca.sh
-bash scripts/sim/run_ga_alpaca.sh
+bash scripts/sim/run_pso_alpaca.sh
+bash scripts/sim/run_gwo_alpaca.sh
 
 # summarization task on Alpaca
-bash scripts/sum/run_de_alpaca.sh
-bash scripts/sum/run_ga_alpaca.sh
-
-# for BBH tasks
-cd BBH
-bash scripts/run_de_cot.sh  # DE 
-bash scripts/run_ga_cot.sh  # GA
+bash scripts/sum/run_pso_alpaca.sh
+bash scripts/sum/run_gwo_alpaca.sh
 ```
 
 ### 🤔 Inference
@@ -47,10 +43,6 @@ To evaluate a single instruction, run the following, set the argument `--content
 bash scripts/cls/eval_single_alpaca.sh  # understanding task on alpaca
 bash scripts/sim/eval_single_alpaca.sh  # simplification
 bash scripts/sum/eval_single_alpaca.sh  # summarization
-
-# BBH
-cd BBH
-bash scripts/eval.sh  # few-shot evaluation
 ```
 
 ### 📌 Notes
@@ -76,26 +68,12 @@ You may need to set the following arguments to customize your own configuration.
 
 ## 📎 Framework
 
-For the pipeline of EvoPrompt, there are mainly three steps as follows, while for each of them algorthms, there exists slight differences to instantiate.
+For the pipeline of SwarmPrompt, there are mainly three steps as follows, while for each of them algorthms, there exists slight differences to instantiate.
 
 - **Initialization**: We apply prompts generated manually written or generated by GPT as the initial population. (see in the `prompts.txt` and `prompts_auto.txt` under the path of each dataset)
 - **Evolution** (mutation and crossover): For templates used for DE and GA, see the file `./data/templates_ga` and `./data/templates_de`. We use a demonstration including one example of the algorithm implementation to get precise and expected prompt following the steps of evolution. To avoid the LLMs copying the demonstration,the demonstration of the task is different from the task of implementation.
 
 - **Evaluation and update**: After each iteration, we need select which prompts should be maintained in the population to update. For GA, we maintain top-$N$ prompts in each iteration while for DE, we replace the old prompt if the newly generated is better.
-
-### 🧬 Genetic Algorithm
-
-- **Selection strategy**: in each iteration, we need to select parents for mutation and crossover, as donors to child prompts. Set the argument `sel_mode` to apply different strategy. There are three choices: `["wheel", "random", "tour"]`, we use `wheel` by default.
-- **Update**: After generating a population with the same size of the original population, $N$, we select top-$N$ as the new population.
-
-### 🧬 Differential Evolution
-
-- **Design in DE**: We apply different DE templates for ablations. Specify the argument `template` to use different settings.
-  - Eliminate Prompt 3: `--template v2`
-  - Prompt 3 (random): add the argument `--donor_random`
-  - Prompt 3 (best): `--template v1` (default setting)
-  - Different part: `--template v3`
-- **Update**: Different from GA, in each iteration for each prompt `p`, several donor prompts are used for the new prompt `p'`, if `p'` is better than `p`, `p` will be replaced by `p'`. Otherwise, it will be maintained.
 
 ## 🌳 Code Strucutre
 
@@ -108,10 +86,9 @@ For the pipeline of EvoPrompt, there are mainly three steps as follows, while fo
 │   ├── cls
 │   ├── sim
 │   ├── sum
-│   ├── template_de.py  # templates of prompt evolution by DE
-│   ├── template_ga.py  # templates of prompt evolution by GA
-│   ├── template_v2.json  # templates for task implementation
-│   └── templates.py  # wrapper
+│   ├── template_pso.py  # templates of prompt evolution by PSO
+│   ├── template_gwo.py  # templates of prompt evolution by GWO
+│   └── template_v2.json  # templates for task implementation
 ├── dataset.py  # dataset class
 ├── evaluator.py  # evaluators on different tasks
 ├── evoluter.py  # DE, GA, APE
@@ -131,24 +108,14 @@ For the pipeline of EvoPrompt, there are mainly three steps as follows, while fo
 - **Aggregation**: Based on the final population of high quality, ensembling strategies can be effectively applied upon the prompts.
 - **More fine-grained metrics**: to select prompt maintained in the population, we need to evaluate the performance on dev set. However, for understanding tasks, metrics such as accuracy or F1 are coarse-grained, sometimes it's not accurate anough to select which to keep in the population since the performances of them are the same.
 - **More complex tasks** are left to explore.
+- **Tuning coefficients** by modifying the template to tweak the coefficients as another parameter could help in making our evolution process within the llm to be a lot more aligned to the original algorithm for these swarm optimizers.
 
-
-## ☕️ Citation
-
-If you find this repository helpful, please consider citing our paper:
-
-```
-@article{guo2023connecting,
-  title={Connecting Large Language Models with Evolutionary Algorithms Yields Powerful Prompt Optimizers},
-  author={Guo, Qingyan and Wang, Rui and Guo, Junliang and Li, Bei and Song, Kaitao and Tan, Xu and Liu, Guoqing and Bian, Jiang and Yang, Yujiu},
-  journal={arXiv preprint arXiv:2309.08532},
-  year={2023}
-}
-```
 
 ## Acknowledgements
 
-Our codebase is based on the following repos. Thanks for open-sourcing!
+We'd like to thank the authors of the paper [Connecting Large Language Models with Evolutionary Algorithms Yields Powerful Prompt Optimizers](https://arxiv.org/abs/2309.08532) for laying a solid base through their paper and well crafted testing framwork which helped us immensely while experimenting with our own paper.
+
+The base framework is based on the following repos. Thanks for open-sourcing!
 
 - [CoT-hub](https://github.com/FranxYao/chain-of-thought-hub)
 - [APE](https://github.com/keirp/automatic_prompt_engineer)

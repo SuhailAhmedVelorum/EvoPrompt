@@ -1,6 +1,6 @@
-from sacrebleu.metrics import BLEU, CHRF, TER
+from sacrebleu.metrics import BLEU
 from rouge import Rouge
-from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
+from sklearn.metrics import f1_score, accuracy_score
 from easse.sari import corpus_sari
 from mosestokenizer import *
 
