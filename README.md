@@ -1,4 +1,4 @@
-# 🧬 EvoPrompt
+# 🧬 SwarmPrompt
 
 This is the modified implementation of the paper [Connecting Large Language Models with Evolutionary Algorithms Yields Powerful Prompt Optimizers](https://arxiv.org/abs/2309.08532) to work on Swarm Optimization Algorithms in the paper SwarmPrompt: Swarm Intelligence-Driven Prompt
 Optimization using Large Language Models
